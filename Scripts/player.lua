@@ -11,8 +11,10 @@ Player.weapons = {
 function Player.new()
     return {
         health = 50,
+        maxHealth = 50,
         weapon = Player.weapons.spear, --current weapon. (Just as spear for damage testing)
         critChance = 0.07,
+        potions = 1,
     }
 end
 

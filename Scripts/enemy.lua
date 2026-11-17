@@ -4,9 +4,9 @@ local Enemy = {}
 --If ever add new enemy, add to table below and to Combat.chart in combat.lua
 --stored as string for rooms
 Enemy.types = {
-    slime   = {name = "Slime", health = 25, damage = 3 },
-    balloon = {name = "Balloon", health = 15, damage = 7 },
-    skeleton = {name = "Skeleton", health = 20, damage = 5 },
+    slime   = {name = "Slime", health = 25, damage = 3, dropChance = 0.20 },
+    balloon = {name = "Balloon", health = 15, damage = 7, dropChance = 0.20 },
+    skeleton = {name = "Skeleton", health = 20, damage = 5, dropChance = 0.20 },
 }
 
 --makes a new enemy from a type name. This lets each enemy have its own health and damage values, instead of sharing the same values from the Enemy.types table
@@ -17,6 +17,7 @@ function Enemy.new(typeName)
         name = stats.name,
         health = stats.health,
         damage = stats.damage,
+        dropChance = stats.dropChance,
     }
 end
 

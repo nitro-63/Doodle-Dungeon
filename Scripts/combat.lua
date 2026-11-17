@@ -6,6 +6,8 @@ local Weak = 1.75
 local Neutral = 1
 local Strong = 0.75
 
+local PotionHeal = 15
+
 --enemy type weakness table 
 -- Combat.chart[damageType][enemyType] = multiplier
 Combat.chart = {
@@ -64,6 +66,22 @@ function Combat.enemyAttack(enemy, player)
     return damage
 end
 
+function Combat.usePotion(player)
+    player.potions = player.potions - 1
+    local before = player.health
+    player.health = math.min(player.health + PotionHeal, player.maxHealth)
+    return player.health - before
+end
+
+function Combat.rollPotionDrop(player,enemy)
+    if love.math.random() < enemy.dropChance then
+        player.potions = player.potions + 1
+        return true
+    end
+    return false
+end
+
+
 --Runs a full turn of combat, returning a message string to display to the player.
 --player attacks first, then enemy attacks if still alive. If player dies, the message will say so.
 function Combat.CycleTurn(player, enemy)
@@ -78,6 +96,9 @@ function Combat.CycleTurn(player, enemy)
         message = message .. "\n" .. enemy.name .. " deals " .. enemyDamage .. " damage!"
     else
         message = message .. "\n" .. enemy.name .. " has been killed."
+        if Combat.rollPotionDrop(player, enemy) then
+            message = message .. "\n" .. "It dropped a potion"
+        end
     end
 
     if player.health <= 0 then
@@ -85,5 +106,19 @@ function Combat.CycleTurn(player, enemy)
     end
     return message
 end
+
+function Combat.healTurn(player, enemy)
+    local healed = Combat.usePotion(player)
+    local message = "You healed " .. healed .. " HP from potion"
+
+    local enemyDamage = Combat.enemyAttack(enemy, player)
+    message = message .. "\n" .. enemy.name .. " hits for " .. enemyDamage .. "!"
+
+    if player.health <= 0 then
+        message = message .. "\n" .. "you died bruh"
+    end
+    return message
+end
+
 
 return Combat
